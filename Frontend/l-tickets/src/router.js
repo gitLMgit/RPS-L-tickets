@@ -1,13 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import App from './App.vue';
-import MyAccountPage from './MyAccountPage.vue';
+//import App from './App.vue';
+import HomePage from './components/HomePage.vue';
+import MyAccountPage from './components/MyAccountPage.vue';
 import BuyTicketsPage from './components/BuyTicketsPage.vue';
+
+
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: App
+    name: 'HomePage',
+    component: HomePage,
   },
   {
     path: '/buy-tickets',

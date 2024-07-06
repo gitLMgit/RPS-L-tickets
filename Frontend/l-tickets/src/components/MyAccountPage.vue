@@ -8,7 +8,16 @@
   <script>
   export default {
     name: 'MyAccountPage',
-  };
+    data() {
+      console.log('Test tu smo');
+      return {
+        selectedEvent: ''
+        
+      };
+    },
+    methods: {
+  }
+    };
   </script>
   
   <style scoped>

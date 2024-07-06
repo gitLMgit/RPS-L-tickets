@@ -18,35 +18,14 @@
           />
           <DropdownComponent />
           <button v-if="isLoggedIn" @click="logout" class="logout-button">Odjavi se</button>
-          <button v-if="isLoggedIn" @click="goToMyAccount" class="my-account-button">Moj nalog</button>
+          <router-link v-if="isLoggedIn" to="/my-account" class="my-account-button">Moj nalog</router-link>
         </div>
       </div>
     </header>
-
-    <div class="event-grid">
-      <div class="event-item" v-for="(event, index) in filteredEvents" :key="index">
-        <img :src="event.image" alt="Event Image" class="event-image">
-        <div class="event-details">
-            <h2>{{ event.title }}</h2>
-            <p class="category">{{ event.category }}</p>
-            <p>{{ event.date }}</p>
-            <p class="location">{{ event.location }}</p>
-            <div v-if="isLoggedIn" class="comment-section">
-              <label>Ocena:</label>
-              <input type="number" v-model="event.rating" min="1" max="5">
-              <textarea v-model="event.comment" placeholder="Ostavite komentar"></textarea>
-              <button @click="leaveComment(index)" class="leave-comment-button">Ostavi komentar</button>
-            </div>
-          <button v-if="isLoggedIn" @click="buyTickets()" class="buy-tickets-button">Kupi karte</button>
-          <button @click="showDetails(index)" class="details-button">Detalji</button>
-          <p v-if="event.showDetails" class="event-description">{{ event.description }}</p>
-        </div>
-      </div>
-    </div>
-
-    <main>
+    <router-view></router-view>
+    <footer>
       <h1>Dobrodošli na naš sajt za rezervacije!</h1>
-    </main>
+    </footer>
 
     <!-- Modal za registraciju -->
     <div class="modal" v-if="showRegisterModal">
@@ -115,44 +94,7 @@ export default {
   },
   data() {
     return {
-      events: [
-        {
-          image: 'https://via.placeholder.com/300',
-          title: 'Mando diao',
-          date: '20. avgust 2024.',
-          description: 'Opis koncerta...',
-          showDetails: false,
-          location: 'Sava centar',
-          loggedIn: false,
-          rating: 0, 
-          comment: '',
-          category: 'Koncert'
-        },
-        {
-          image: 'https://via.placeholder.com/300',
-          title: 'Partizan - Vojvodina',
-          date: '25. avgust 2024.',
-          description: 'Opis utakmice...',
-          showDetails: false,
-          location: 'Stadion Partizana',
-          loggedIn: false,
-          rating: 0, 
-          comment: '',
-          category: 'Utakmica'
-        },
-        {
-          image: 'https://via.placeholder.com/300',
-          title: 'Festival uličnih sviračа',
-          date: '21. septembar 2024.',
-          description: 'Opis festivala...',
-          showDetails: false,
-          location: 'Petrovaradin',
-          loggedIn: false,
-          rating: 0, 
-          comment: '',
-          category: 'Festival'
-        },
-      ],
+      events: [],
       showRegisterModal: false,
       showLoginModal: false,
       form: {
@@ -187,7 +129,9 @@ export default {
       event.comment = '';
     },
     goToMyAccount() {
+      console.log('Navigacija ka MyAccount');
       this.$router.push('/my-account');
+      //window.location.href = '/my-account'
     },
     showDetails(index) {
       this.events[index].showDetails = !this.events[index].showDetails;
@@ -210,6 +154,7 @@ export default {
         lozinka: ''
       };
       this.closeRegisterModal();
+      this.$router.push('/')
     },
     openLoginModal() {
       this.showLoginModal = true;
@@ -228,9 +173,10 @@ export default {
       this.closeLoginModal();
       this.isLoggedIn = true;
       // Postavljanje statusa ulogovanosti za sve događaje (simulacija ulogovanosti)
-      this.events.forEach(event => {
-        event.loggedIn = true;
-      });
+      //this.events.forEach(event => {
+       // event.loggedIn = true;
+      //});
+      this.$router.push('/')
     },
     logout() {
       // Implementacija logike za odjavu korisnika
@@ -239,12 +185,13 @@ export default {
       this.events.forEach(event => {
         event.loggedIn = false;
       });
+      this.$router.push('/')
     },
     buyTickets() {
       this.$router.push('/buy-tickets');
     },
     goToHome() {
-      // Implementacija navigacije na početnu stranicu
+      this.$router.push('/')
     }
   }
 };
@@ -254,61 +201,6 @@ export default {
 
 <style>
 
-.event-item {
-  position: relative;
-  overflow: hidden;
-}
-
-.event-details {
-  position: relative;
-  padding-bottom: 40px;
-}
-
-.comment-section {
-  position: absolute;
-  bottom: -100%; /* Skriva se inicijalno */
-  left: 0;
-  width: 100%;
-  padding: 10px;
-  background-color: #f0f0f0;
-  border-radius: 0 0 8px 8px;
-  z-index: 10;
-  transition: bottom 0.3s ease;
-}
-
-.event-item:hover .comment-section {
-  bottom: 100%; /* Prikazuje se ispod event-item-a pri hoveru */
-}
-
-.comment-section label {
-  margin-bottom: 5px;
-  font-weight: bold;
-  display: block;
-}
-
-.comment-section input[type="number"],
-.comment-section textarea {
-  width: calc(100% - 20px);
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.leave-comment-button {
-  background-color: #009688;
-  color: #ffffff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.leave-comment-button:hover {
-  background-color: #00796b;
-}
 
 .buy-tickets-button, .details-button {
   margin: 10px;
