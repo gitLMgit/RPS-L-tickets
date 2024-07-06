@@ -89,6 +89,11 @@ computed: {
       );
     }
   },
+  methods:{
+    showDetails(index) {
+      this.events[index].showDetails = !this.events[index].showDetails;
+    },
+  }
 }
 </script>
 

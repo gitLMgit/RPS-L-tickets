@@ -133,9 +133,7 @@ export default {
       this.$router.push('/my-account');
       //window.location.href = '/my-account'
     },
-    showDetails(index) {
-      this.events[index].showDetails = !this.events[index].showDetails;
-    },
+
     openRegisterModal() {
       this.showRegisterModal = true;
     },
@@ -173,9 +171,9 @@ export default {
       this.closeLoginModal();
       this.isLoggedIn = true;
       // Postavljanje statusa ulogovanosti za sve događaje (simulacija ulogovanosti)
-      //this.events.forEach(event => {
-       // event.loggedIn = true;
-      //});
+      this.events.forEach(event => {
+        event.loggedIn = true;
+      });
       this.$router.push('/')
     },
     logout() {
