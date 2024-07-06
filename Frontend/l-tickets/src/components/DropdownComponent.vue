@@ -19,7 +19,12 @@
       return {
         selectedEvent: ''
       };
+    },
+    methods: {
+    handleTypeChange(event) {
+      this.$emit('filterByType', event.target.value);
     }
+  }
   };
   </script>
   
