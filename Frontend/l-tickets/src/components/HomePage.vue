@@ -1,158 +1,251 @@
 <template>
   <div class="event-grid">
-      <div class="event-item" v-for="(event, index) in filteredEvents" :key="index">
-        <img :src="event.image" alt="Event Image" class="event-image">
+    <div class="event-card" v-for="(event, index) in filteredEvents" :key="index">
+      <div class="card-content">
+        <img :src="event.imageUrl" :alt="event.title">
         <div class="event-details">
-            <h2>{{ event.title }}</h2>
-            <p class="category">{{ event.category }}</p>
-            <p>{{ event.date }}</p>
-            <p class="location">{{ event.location }}</p>
-            <div v-if="isLoggedIn" class="comment-section">
-              <label>Ocena:</label>
-              <input type="number" v-model="event.rating" min="1" max="5">
-              <textarea v-model="event.comment" placeholder="Ostavite komentar"></textarea>
-              <button @click="leaveComment(index)" class="leave-comment-button">Ostavi komentar</button>
-            </div>
-          <button v-if="isLoggedIn" @click="buyTickets()" class="buy-tickets-button">Kupi karte</button>
-          <button @click="showDetails(index)" class="details-button">Detalji</button>
-          <p v-if="event.showDetails" class="event-description">{{ event.description }}</p>
+          <h2>{{ event.title }}</h2>
+          <p><strong>Datum:</strong> {{ event.date }}</p>
+          <p><strong>Lokacija:</strong> {{ event.location }}</p>
         </div>
+        <div v-if="isLoggedIn" class="rating-section">
+          <label for="rating">Ocena:</label>
+          <select v-model="event.rating">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+          <label for="comment">Komentar:</label>
+          <textarea v-model="event.comment"></textarea>
+          <button @click="leaveComment(index)">Pošalji</button>
+        </div>
+        <button  @click="buyTickets">Kupi karte</button> <!--samo da se pojavi kada je neko ulogovan-->
+        <button  @click="showDetails(event)">Detalji</button>
       </div>
     </div>
+    <div v-if="showEventDetails" class="event-details-popup">
+      <h2>{{ selectedEvent.title }}</h2>
+      <p><strong>Datum:</strong> {{ selectedEvent.date }}</p>
+      <p><strong>Lokacija:</strong> {{ selectedEvent.location }}</p>
+      <p><strong>Opis:</strong> {{ selectedEvent.description }}</p>
+      <button @click="closeDetails">Zatvori</button>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'HomePage',
+  props: {
+    selectedCategory: {
+      type: String,
+      default: ''
+    },
+    searchQuery: {
+      type: String,
+      default: ''
+    },
+    isLoggedIn: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       events: [
         {
-          image: 'https://via.placeholder.com/300',
-          title: 'Mando diao',
-          date: '20. avgust 2024.',
-          description: 'Opis koncerta...',
-          showDetails: false,
-          location: 'Sava centar',
-          loggedIn: false,
-          rating: 0, 
-          comment: '',
-          category: 'Koncert'
-        },
-        {
-          image: 'https://via.placeholder.com/300',
           title: 'Partizan - Vojvodina',
-          date: '25. avgust 2024.',
-          description: 'Opis utakmice...',
-          showDetails: false,
-          location: 'Stadion Partizana',
-          loggedIn: false,
-          rating: 0, 
+          date: '2024-07-10',
+          location: 'Beograd',
+          imageUrl: 'concert.jpg',
+          description: 'Opis događaja Partizan - Vojvodina',
+          rating: 0,
           comment: '',
           category: 'Utakmica'
         },
         {
-          image: 'https://via.placeholder.com/300',
-          title: 'Festival uličnih sviračа',
-          date: '21. septembar 2024.',
-          description: 'Opis festivala...',
-          showDetails: false,
-          location: 'Petrovaradin',
-          loggedIn: false,
-          rating: 0, 
+          title: 'Barselona - Partizan',
+          date: '2024-07-12',
+          location: 'Novi Sad',
+          imageUrl: 'match.jpg',
+          description: 'Opis događaja Barselona - Partizan',
+          rating: 0,
+          comment: '',
+          category: 'Utakmica'
+        },
+        {
+          title: 'Festival uličnih svirača',
+          date: '2024-07-14',
+          location: 'Niš',
+          imageUrl: 'festival.jpg',
+          description: 'Opis događaja Festival uličnih svirača',
+          rating: 0,
           comment: '',
           category: 'Festival'
         },
+        // Dodajte ostale događaje po potrebi
       ],
-      showRegisterModal: false,
-      showLoginModal: false,
-      form: {
-        ime: '',
-        prezime: '',
-        pol: 'M',
-        korisnickoIme: '',
-        lozinka: ''
-      },
-      loginForm: {
-        korisnickoIme: '',
-        lozinka: ''
-      },
-      isLoggedIn: false,
-      searchQuery: ''
+      showEventDetails: false,
+      selectedEvent: {}
     };
   },
-
-computed: {
+  computed: {
     filteredEvents() {
-      return this.events.filter(event =>
-        event.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
+      return this.events.filter(event => {
+        const matchesCategory = this.selectedCategory ? event.category === this.selectedCategory : true;
+        const matchesSearch = this.searchQuery ? event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
+        return matchesCategory && matchesSearch;
+      });
     }
   },
-  methods:{
-    showDetails(index) {
-      this.events[index].showDetails = !this.events[index].showDetails;
+  methods: {
+    buyTickets() {
+      this.$router.push('/buy-tickets');
     },
+    leaveComment(index) {
+      const event = this.filteredEvents[index];
+      console.log(`Rating for ${event.title}: ${event.rating}`);
+      console.log(`Comment for ${event.title}: ${event.comment}`);
+      event.rating = 0;
+      event.comment = '';
+    },
+    showDetails(event) {
+      this.selectedEvent = event;
+      this.showEventDetails = true;
+    },
+    closeDetails() {
+      this.showEventDetails = false;
+    }
   }
-}
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.event-item {
-  position: relative;
+.event-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.event-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin: 16px;
   overflow: hidden;
+  width: calc(33.33% - 50px);
+  transition: transform 0.2s ease-in-out;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-content {
+  padding: 16px;
+}
+
+.event-card img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px 8px 0 0;
 }
 
 .event-details {
-  position: relative;
-  padding-bottom: 40px;
+  margin-top: 16px;
 }
 
-.comment-section {
-  position: absolute;
-  bottom: -100%; /* Skriva se inicijalno */
-  left: 0;
-  width: 100%;
-  padding: 10px;
-  background-color: #f0f0f0;
-  border-radius: 0 0 8px 8px;
-  z-index: 10;
-  transition: bottom 0.3s ease;
+.event-details h2 {
+  font-size: 1.5em;
+  margin-bottom: 8px;
 }
 
-.event-item:hover .comment-section {
-  bottom: 100%; /* Prikazuje se ispod event-item-a pri hoveru */
+.event-details p {
+  margin-bottom: 8px;
 }
 
-.comment-section label {
-  margin-bottom: 5px;
-  font-weight: bold;
-  display: block;
+.rating-section {
+  margin-top: 16px;
 }
 
-.comment-section input[type="number"],
-.comment-section textarea {
-  width: calc(100% - 20px);
+.rating-section label {
+  margin-right: 8px;
+}
+
+.rating-section select,
+.rating-section textarea {
+  margin-bottom: 8px;
   padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 14px;
+  border: 1px solid #ccc;
+  font-size: 1em;
 }
 
-.leave-comment-button {
+.rating-section button {
   background-color: #009688;
-  color: #ffffff;
-  border: none;
+  color: white;
   padding: 8px 16px;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.leave-comment-button:hover {
+.rating-section button:hover {
   background-color: #00796b;
 }
 
+.event-card button {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  background-color: #009688;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.event-card button:hover {
+  background-color: #00796b;
+}
+
+.event-details-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.event-details-popup h2 {
+  font-size: 1.5em;
+  margin-bottom: 16px;
+}
+
+.event-details-popup p {
+  margin-bottom: 8px;
+}
+
+.event-details-popup button {
+  background-color: #009688;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.event-details-popup button:hover {
+  background-color: #00796b;
+}
 </style>

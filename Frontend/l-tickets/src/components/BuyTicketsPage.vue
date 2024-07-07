@@ -1,23 +1,90 @@
 <template>
-    <div class="buy-tickets-page">
-      <h1>Dobrodošli na kupovinu karata</h1>
-      <!-- Add more content or functionalities as needed -->
+  <div class="buy-tickets-page">
+    <h1>Dobrodošli na kupovinu karata</h1>
+    <div class="event-details">
+      <h2>{{ selectedEvent.title }}</h2>
+      <p><strong>Datum:</strong> {{ selectedEvent.date }}</p>
+      <p><strong>Lokacija:</strong> {{ selectedEvent.location }}</p>
+      <p><strong>Trenutna cena licitacije:</strong> {{ currentBid }}</p>
+      <input type="number" v-model="bidAmount" :min="currentBid" placeholder="Unesite vašu licitaciju">
+      <button @click="placeBid">Licitiraj</button>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'BuyTicketsPage',
-    // You can add data, methods, computed properties, etc. here if needed
-  };
-  </script>
-  
-  <style scoped>
-  .buy-tickets-page {
-    font-family: 'Arial', sans-serif;
-    color: #333;
-    text-align: center;
-    margin-top: 60px;
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'BuyTicketsPage',
+  data() {
+    return {
+      selectedEvent: {
+        title: 'Partizan - Vojvodina',
+        date: '2024-07-10',
+        location: 'Beograd'
+      },
+      currentBid: 1000, // Initial bid amount
+      bidAmount: 1000
+    };
+  },
+  methods: {
+    placeBid() {
+      if (this.bidAmount > this.currentBid) {
+        this.currentBid = this.bidAmount;
+        alert(`Uspešno ste licitirali sa iznosom ${this.bidAmount}`);
+      } else {
+        alert('Uneta vrednost mora biti veća od trenutne cene.');
+      }
+    }
   }
-  </style>
-  
+};
+</script>
+
+<style scoped>
+.buy-tickets-page {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  text-align: center;
+  margin-top: 60px;
+}
+
+.event-details {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.event-details h2 {
+  font-size: 1.5em;
+  margin-bottom: 16px;
+}
+
+.event-details p {
+  margin-bottom: 8px;
+}
+
+.event-details input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.event-details button {
+  background-color: #009688;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.event-details button:hover {
+  background-color: #00796b;
+}
+</style>

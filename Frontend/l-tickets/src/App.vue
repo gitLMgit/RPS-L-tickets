@@ -16,13 +16,13 @@
             @open-register-modal="openRegisterModal" 
             @open-login-modal="openLoginModal" 
           />
-          <DropdownComponent />
+          <DropdownComponent @selectCategory="selectCategory"/>
           <button v-if="isLoggedIn" @click="logout" class="logout-button">Odjavi se</button>
           <router-link v-if="isLoggedIn" to="/my-account" class="my-account-button">Moj nalog</router-link>
         </div>
       </div>
     </header>
-    <router-view></router-view>
+    <router-view :selected-category="selectedCategory" :search-query="searchQuery"></router-view>
     <footer>
       <h1>Dobrodošli na naš sajt za rezervacije!</h1>
     </footer>
@@ -109,15 +109,9 @@ export default {
         lozinka: ''
       },
       isLoggedIn: false,
-      searchQuery: ''
+      searchQuery: '',
+      selectedCategory: ''
     };
-  },
-  computed: {
-    filteredEvents() {
-      return this.events.filter(event =>
-        event.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    }
   },
   methods: {
     leaveComment(index) {
@@ -190,13 +184,13 @@ export default {
     },
     goToHome() {
       this.$router.push('/')
+    },
+    selectCategory(category) {
+      this.selectedCategory = category;
     }
   }
 };
 </script>
-
-
-
 <style>
 
 
