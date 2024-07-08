@@ -17,7 +17,7 @@ export default {
     return {
       isOpen: false,
       selectedCategory: '',
-      categories: ['Koncert', 'Utakmica', 'Festival', 'Bioskop', 'Predstava', 'Ostalox  '] // Dodajte ili promenite kategorije po potrebi
+      categories: ['Koncert', 'Utakmica', 'Festival', 'Bioskop', 'Predstava', 'Ostalo'] // Dodaj ili promenite kategorije po potrebi
     };
   },
   methods: {

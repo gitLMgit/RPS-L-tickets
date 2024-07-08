@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from './components/HomePage.vue';
 import MyAccountPage from './components/MyAccountPage.vue';
 import BuyTicketsPage from './components/BuyTicketsPage.vue';
+import NewEvent from './components/NewEvent.vue';
 
 
 
@@ -22,6 +23,11 @@ const routes = [
     name: 'MyAccount',
     component: MyAccountPage,
 
+  },
+  {
+    path: '/add-event',
+    name: 'NewEvenet',
+    component: NewEvent
   }
 ];
 

@@ -1,6 +1,6 @@
 <template>
   <div class="buy-tickets-page">
-    <h1>Dobrodošli na kupovinu karata</h1>
+    <h1>Onlajn kupovina ulaznice</h1>
     <div class="event-details">
       <h2>{{ selectedEvent.title }}</h2>
       <p><strong>Datum:</strong> {{ selectedEvent.date }}</p>
@@ -86,5 +86,15 @@ export default {
 
 .event-details button:hover {
   background-color: #00796b;
+}
+
+h1 {
+    font-family: 'Roboto', sans-serif; /* Profesionalni font */
+    font-size: 3rem; /* Veličina fonta */
+    color: #2c3e50; /* Tamno plava boja */
+    text-align: center; /* Centriran tekst */
+    margin-top: 5rem; /* Gornji razmak */
+    margin-bottom: 1rem; /* Donji razmak */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Lagana senka za tekst */
 }
 </style>
