@@ -95,7 +95,9 @@ export default {
     filteredEvents() {
       return this.events.filter(event => {
         const matchesCategory = this.selectedCategory ? event.category === this.selectedCategory : true;
-        const matchesSearch = this.searchQuery ? event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
+        const matchesLocationSearch = this.searchQuery ? event.location.toLocaleLowerCase().includes(this.searchQuery.toLowerCase()) : true;
+        const matchesTitleSearch = this.searchQuery ? event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
+        const matchesSearch = matchesLocationSearch || matchesTitleSearch;
         return matchesCategory && matchesSearch;
       });
     }
