@@ -2021,3 +2021,12 @@ org.eclipse.core.runtime.CoreException: Could not resolve artifact org.webjars:s
 2024-07-08 23:47:34,030 [Worker-21: Launching LukixSpring - LukixSpringApplication] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/RPSJPA: RPSJPA:RPSJPA:0.0.1-SNAPSHOT with classifier null to /RPSJPA/target/classes
 2024-07-08 23:47:34,226 [Worker-21: Launching LukixSpring - LukixSpringApplication] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/RPSJPA: RPSJPA:RPSJPA:0.0.1-SNAPSHOT with classifier null to /RPSJPA/target/classes
 2024-07-08 23:47:34,423 [Worker-21: Launching LukixSpring - LukixSpringApplication] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/RPSJPA: RPSJPA:RPSJPA:0.0.1-SNAPSHOT with classifier null to /RPSJPA/target/classes
+2024-07-08 23:55:50,420 [Worker-53: Building] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.example:LukixSpring:0.0.1-SNAPSHOT @ C:\Users\lukam\OneDrive\Desktop\RPS\RPS-L-tickets\Backend\LukixSpring\pom.xml.
+2024-07-08 23:55:51,130 [Worker-53: Building] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/RPSJPA: RPSJPA:RPSJPA:0.0.1-SNAPSHOT with classifier  to /RPSJPA/target/classes
+2024-07-08 23:55:51,815 [Worker-53: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2024-07-08 23:55:51,835 [Worker-53: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2024-07-08 23:55:51,842 [Worker-53: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\lukam\OneDrive\Desktop\RPS\RPS-L-tickets\Backend\LukixSpring\src\test\resources
+2024-07-08 23:55:52,122 [Worker-52: Building] WARN  o.a.m.s.f.DefaultMavenResourcesFiltering - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2024-07-08 23:55:52,126 [Worker-52: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\java to target\classes
+2024-07-08 23:55:52,130 [Worker-52: Building] WARN  o.a.m.s.f.DefaultMavenResourcesFiltering - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2024-07-08 23:55:52,132 [Worker-52: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\lukam\OneDrive\Desktop\RPS\RPS-L-tickets\Backend\RPSJPA\src\test\resources
