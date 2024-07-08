@@ -15,5 +15,8 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 	
 	@Query("select e from Event e where e.title= :input or e.location.name= :input")
 	List<Event> findByTitleOrLocation(@Param("input")String input);
+	
+	@Query("select e from Event e inner join e.ratings r")
+	List<Event> getRatedEventStatistic();
 
 }

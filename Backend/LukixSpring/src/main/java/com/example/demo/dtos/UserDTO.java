@@ -1,14 +1,11 @@
 package com.example.demo.dtos;
 
-import jakarta.validation.constraints.NotNull;
-
-public class NewUserDTO {
+public class UserDTO {
 
 	private String name;
 	private String surname;
 	private int age;
 	private String status;
-	@NotNull
 	private String gender;
 	private String username;
 	private String password;
@@ -76,3 +73,4 @@ public class NewUserDTO {
 				+ "age"+age+", status=" + status + ", gender=" + gender + "]";
 	}
 }
+

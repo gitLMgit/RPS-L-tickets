@@ -20,6 +20,7 @@ import model.Bid;
 import model.Currentbid;
 import model.Event;
 import model.Rating;
+import model.Ticket;
 
 @Service
 public class EventService {
@@ -103,5 +104,13 @@ public class EventService {
 			return false;
 		}
 		return true;
+	}
+	
+	public List<Ticket> getTicketsStat(){
+		return tr.getTicketStat();
+	}
+	
+	public List<Event> getRatedEventsStat(){
+		return er.getRatedEventStatistic();
 	}
 }
