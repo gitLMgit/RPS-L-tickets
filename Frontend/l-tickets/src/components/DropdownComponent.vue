@@ -4,8 +4,8 @@
       {{ selectedCategory || 'Odaberite kategoriju' }}
     </button>
     <div v-if="isOpen" class="dropdown-menu">
-      <div v-for="category in categories" :key="category.id" @click="selectCategory(category.name)">
-        {{ category.name }}
+      <div v-for="category in categories" :key="category.idCategory" @click="selectCategory(category.category)">
+        {{ category.category }}
       </div>
     </div>
   </div>
@@ -23,6 +23,7 @@ export default {
     };
   },
   created() {
+    console.log('created')
     this.fetchCategories();
   },
   methods: {
@@ -35,13 +36,16 @@ export default {
       this.$emit('selectCategory', category);
     },
     fetchCategories() {
+      console.log("pribavljamo kat")
       axios.get('/category/getAllCategories')
         .then(response => {
+          console.log(response.data)
           this.categories = response.data;
         })
         .catch(error => {
           console.error('Error fetching categories:', error);
         });
+        console.log(this.categories)
     }
   }
 };
