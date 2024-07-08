@@ -15,6 +15,8 @@ public class User implements Serializable {
 
 	private String gender;
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idUser;
 
 	private String name;

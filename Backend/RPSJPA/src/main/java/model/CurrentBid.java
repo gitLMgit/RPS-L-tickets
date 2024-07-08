@@ -1,7 +1,17 @@
 package model;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 
 
 /**
@@ -10,8 +20,8 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name="currentbids")
-@NamedQuery(name="CurrentBid.findAll", query="SELECT c FROM CurrentBid c")
-public class CurrentBid implements Serializable {
+@NamedQuery(name="Currentbid.findAll", query="SELECT c FROM Currentbid c")
+public class Currentbid implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -23,9 +33,10 @@ public class CurrentBid implements Serializable {
 	//bi-directional many-to-one association to Bid
 	@ManyToOne
 	@JoinColumn(name="Bids_idBid")
+	@JsonManagedReference
 	private Bid bid;
 
-	public CurrentBid() {
+	public Currentbid() {
 	}
 
 	public int getIdCurrentBid() {

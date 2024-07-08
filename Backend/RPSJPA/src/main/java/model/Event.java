@@ -1,9 +1,21 @@
 package model;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 
 /**
@@ -28,18 +40,22 @@ public class Event implements Serializable {
 
 	//bi-directional many-to-one association to Category
 	@ManyToOne
+	@JsonManagedReference
 	private Category category;
 
 	//bi-directional many-to-one association to Location
 	@ManyToOne
+	@JsonManagedReference
 	private Location location;
 
 	//bi-directional many-to-one association to Rating
 	@OneToMany(mappedBy="event")
+	@JsonBackReference
 	private List<Rating> ratings;
 
 	//bi-directional many-to-one association to Ticket
 	@OneToMany(mappedBy="event")
+	@JsonBackReference
 	private List<Ticket> tickets;
 
 	public Event() {

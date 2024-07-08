@@ -1,8 +1,16 @@
 package model;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 
 
 /**
@@ -15,7 +23,7 @@ public class Buyer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	//@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int user_idUser;
 
 	private int age;
@@ -24,10 +32,12 @@ public class Buyer implements Serializable {
 
 	//bi-directional many-to-one association to Bid
 	@OneToMany(mappedBy="buyer")
+	@JsonBackReference
 	private List<Bid> bids;
 
 	//bi-directional many-to-one association to Rating
 	@OneToMany(mappedBy="buyer")
+	@JsonBackReference
 	private List<Rating> ratings;
 
 	public Buyer() {

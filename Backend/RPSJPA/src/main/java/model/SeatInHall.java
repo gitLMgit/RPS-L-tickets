@@ -1,8 +1,19 @@
 package model;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 
 /**
@@ -21,14 +32,17 @@ public class SeatInHall implements Serializable {
 
 	//bi-directional many-to-one association to Hall
 	@ManyToOne
+	@JsonManagedReference
 	private Hall hall;
 
 	//bi-directional many-to-one association to Seat
 	@ManyToOne
+	@JsonManagedReference
 	private Seat seat;
 
 	//bi-directional many-to-one association to Ticket
 	@OneToMany(mappedBy="seatInHall")
+	@JsonBackReference
 	private List<Ticket> tickets;
 
 	public SeatInHall() {

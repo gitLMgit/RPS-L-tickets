@@ -2,8 +2,9 @@ package com.example.demo.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.model.Category;
+import model.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
+	Category findByCategory(String name);
 }

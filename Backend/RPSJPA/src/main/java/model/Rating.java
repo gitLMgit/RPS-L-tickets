@@ -1,7 +1,15 @@
 package model;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
 
 
 /**
@@ -23,10 +31,12 @@ public class Rating implements Serializable {
 
 	//bi-directional many-to-one association to Buyer
 	@ManyToOne
+	@JsonManagedReference
 	private Buyer buyer;
 
 	//bi-directional many-to-one association to Event
 	@ManyToOne
+	@JsonManagedReference
 	private Event event;
 
 	public Rating() {

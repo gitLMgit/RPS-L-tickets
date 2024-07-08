@@ -1,9 +1,23 @@
 package model;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 
 /**
@@ -29,15 +43,17 @@ public class Bid implements Serializable {
 
 	//bi-directional many-to-one association to Buyer
 	@ManyToOne
+	@JsonManagedReference
 	private Buyer buyer;
 
 	//bi-directional many-to-one association to Ticket
 	@ManyToOne
 	private Ticket ticket;
 
-	//bi-directional many-to-one association to CurrentBid
+	//bi-directional many-to-one association to Currentbid
 	@OneToMany(mappedBy="bid")
-	private List<CurrentBid> currentbids;
+	@JsonBackReference
+	private List<Currentbid> currentbids;
 
 	public Bid() {
 	}
@@ -82,22 +98,22 @@ public class Bid implements Serializable {
 		this.ticket = ticket;
 	}
 
-	public List<CurrentBid> getCurrentbids() {
+	public List<Currentbid> getCurrentbids() {
 		return this.currentbids;
 	}
 
-	public void setCurrentbids(List<CurrentBid> currentbids) {
+	public void setCurrentbids(List<Currentbid> currentbids) {
 		this.currentbids = currentbids;
 	}
 
-	public CurrentBid addCurrentbid(CurrentBid currentbid) {
+	public Currentbid addCurrentbid(Currentbid currentbid) {
 		getCurrentbids().add(currentbid);
 		currentbid.setBid(this);
 
 		return currentbid;
 	}
 
-	public CurrentBid removeCurrentbid(CurrentBid currentbid) {
+	public Currentbid removeCurrentbid(Currentbid currentbid) {
 		getCurrentbids().remove(currentbid);
 		currentbid.setBid(null);
 
