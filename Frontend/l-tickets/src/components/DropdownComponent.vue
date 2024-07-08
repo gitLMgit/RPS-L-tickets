@@ -4,21 +4,26 @@
       {{ selectedCategory || 'Odaberite kategoriju' }}
     </button>
     <div v-if="isOpen" class="dropdown-menu">
-      <div v-for="category in categories" :key="category" @click="selectCategory(category)">
-        {{ category }}
+      <div v-for="category in categories" :key="category.id" @click="selectCategory(category.name)">
+        {{ category.name }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from '@/axios'; 
+
 export default {
   data() {
     return {
       isOpen: false,
       selectedCategory: '',
-      categories: ['Koncert', 'Utakmica', 'Festival', 'Bioskop', 'Predstava', 'Ostalo'] // Dodaj ili promenite kategorije po potrebi
+      categories: [] 
     };
+  },
+  created() {
+    this.fetchCategories();
   },
   methods: {
     toggleDropdown() {
@@ -28,6 +33,15 @@ export default {
       this.selectedCategory = category;
       this.isOpen = false;
       this.$emit('selectCategory', category);
+    },
+    fetchCategories() {
+      axios.get('/category/getAllCategories')
+        .then(response => {
+          this.categories = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching categories:', error);
+        });
     }
   }
 };
