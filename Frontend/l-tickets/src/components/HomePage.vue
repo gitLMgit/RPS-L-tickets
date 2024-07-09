@@ -2,11 +2,10 @@
   <div class="event-grid">
     <div class="event-card" v-for="(event, index) in filteredEvents" :key="index">
       <div class="card-content">
-        <img :src="event.imageUrl" :alt="event.title">
         <div class="event-details">
           <h2>{{ event.title }}</h2>
-          <p><strong>Datum:</strong> {{ event.date }}</p>
-          <p><strong>Lokacija:</strong> {{ event.location }}</p>
+          <p><strong>Datum:</strong> {{ formatDate(event.date) }}</p>
+          <p><strong>Lokacija:</strong> {{ event.location.name }}, {{ event.location.address }}</p>
         </div>
         <div v-if="isLoggedIn" class="rating-section">
           <label for="rating">Ocena:</label>
@@ -22,14 +21,14 @@
           <textarea v-model="event.comment"></textarea>
           <button @click="leaveComment(index)">Pošalji</button>
         </div>
-        <button  @click="buyTickets">Kupi karte</button> <!--samo da se pojavi kada je neko ulogovan-->
-        <button  @click="showDetails(event)">Detalji</button>
+        <button v-if="isLoggedIn" @click="buyTickets">Kupi karte</button> <!-- samo da se pojavi kada je neko ulogovan -->
+        <button @click="showDetails(event)">Detalji</button>
       </div>
     </div>
     <div v-if="showEventDetails" class="event-details-popup">
       <h2>{{ selectedEvent.title }}</h2>
-      <p><strong>Datum:</strong> {{ selectedEvent.date }}</p>
-      <p><strong>Lokacija:</strong> {{ selectedEvent.location }}</p>
+      <p><strong>Datum:</strong> {{ formatDate(selectedEvent.date) }}</p>
+      <p><strong>Lokacija:</strong> {{ selectedEvent.location.name }}, {{ selectedEvent.location.address }}</p>
       <p><strong>Opis:</strong> {{ selectedEvent.description }}</p>
       <button @click="closeDetails">Zatvori</button>
     </div>
@@ -37,6 +36,9 @@
 </template>
 
 <script>
+import axios from '@/axios'; 
+import { format } from 'date-fns';
+
 export default {
   props: {
     selectedCategory: {
@@ -54,55 +56,34 @@ export default {
   },
   data() {
     return {
-      events: [
-        {
-          title: 'Partizan - Vojvodina',
-          date: '2024-07-10',
-          location: 'Beograd',
-          imageUrl: 'concert.jpg',
-          description: 'Opis događaja Partizan - Vojvodina',
-          rating: 0,
-          comment: '',
-          category: 'Utakmica'
-        },
-        {
-          title: 'Barselona - Partizan',
-          date: '2024-07-12',
-          location: 'Novi Sad',
-          imageUrl: 'match.jpg',
-          description: 'Opis događaja Barselona - Partizan',
-          rating: 0,
-          comment: '',
-          category: 'Utakmica'
-        },
-        {
-          title: 'Festival uličnih svirača',
-          date: '2024-07-14',
-          location: 'Niš',
-          imageUrl: 'festival.jpg',
-          description: 'Opis događaja Festival uličnih svirača',
-          rating: 0,
-          comment: '',
-          category: 'Festival'
-        },
-        // Dodajte ostale događaje po potrebi
-      ],
+      events: [],
       showEventDetails: false,
       selectedEvent: {}
     };
-  },
+  },  
   computed: {
     filteredEvents() {
       return this.events.filter(event => {
         const matchesCategory = this.selectedCategory ? event.category === this.selectedCategory : true;
-        const matchesLocationSearch = this.searchQuery ? event.location.toLocaleLowerCase().includes(this.searchQuery.toLowerCase()) : true;
+        const matchesLocationSearch = this.searchQuery ? event.location.name.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
         const matchesTitleSearch = this.searchQuery ? event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
         const matchesSearch = matchesLocationSearch || matchesTitleSearch;
-        return matchesCategory && matchesSearch;
+        return matchesSearch && matchesCategory;
       });
     }
   },
   methods: {
+    async fetchEvents() {
+      try {
+        const response = await axios.get('/event/getAllEvent');
+        this.events = response.data;
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+      }
+    },
+    formatDate(date) {
+      return format(new Date(date), 'dd.MM.yyyy');
+    },
     buyTickets() {
       this.$router.push('/buy-tickets');
     },
@@ -120,6 +101,9 @@ export default {
     closeDetails() {
       this.showEventDetails = false;
     }
+  },
+  mounted() {
+    this.fetchEvents();
   }
 };
 </script>
