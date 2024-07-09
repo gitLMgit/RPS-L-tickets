@@ -18,10 +18,10 @@ public class CategoryController {
 	CategoryService service;
 	
 	
-	@PostMapping("addCategory")
-	public ResponseEntity<?> addCategory(@RequestParam("catName")String  catName){
-		return ResponseEntity.ok(service.addCategory(catName));
-	}
+		@PostMapping("addCategory")
+		public ResponseEntity<?> addCategory(@RequestParam("catName")String  catName){
+			return ResponseEntity.ok(service.addCategory(catName));
+		}
 	
 
 }

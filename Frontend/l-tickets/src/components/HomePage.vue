@@ -7,21 +7,9 @@
           <p><strong>Datum:</strong> {{ formatDate(event.date) }}</p>
           <p><strong>Lokacija:</strong> {{ event.location.name }}, {{ event.location.address }}</p>
         </div>
-        <div v-if="isLoggedIn" class="rating-section">
-          <label for="rating">Ocena:</label>
-          <select v-model="event.rating">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-          <label for="comment">Komentar:</label>
-          <textarea v-model="event.comment"></textarea>
-          <button @click="leaveComment(index)">Pošalji</button>
+        <div v-if="isLogged()">
+          <button @click="buyTickets(event)">Kupi karte</button>
         </div>
-        <button v-if="isLoggedIn" @click="buyTickets">Kupi karte</button> <!-- samo da se pojavi kada je neko ulogovan -->
         <button @click="showDetails(event)">Detalji</button>
       </div>
     </div>
@@ -36,8 +24,9 @@
 </template>
 
 <script>
-import axios from '@/axios'; 
+import axios from '@/axios';
 import { format } from 'date-fns';
+import { isLoggedIn } from '../session.js';
 
 export default {
   props: {
@@ -60,11 +49,13 @@ export default {
       showEventDetails: false,
       selectedEvent: {}
     };
-  },  
+  },
   computed: {
     filteredEvents() {
       return this.events.filter(event => {
-        const matchesCategory = this.selectedCategory ? event.category === this.selectedCategory : true;
+        const matchesCategory = this.selectedCategory  ? event.category.category === this.selectedCategory : true;
+        if (this.selectedCategory == undefined)
+          this.fetchEvents();
         const matchesLocationSearch = this.searchQuery ? event.location.name.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
         const matchesTitleSearch = this.searchQuery ? event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
         const matchesSearch = matchesLocationSearch || matchesTitleSearch;
@@ -75,17 +66,21 @@ export default {
   methods: {
     async fetchEvents() {
       try {
-        const response = await axios.get('/event/getAllEvent');
+        const response = await axios.get('/permitAll/getAllEvent');
         this.events = response.data;
       } catch (error) {
         console.error('Failed to fetch events:', error);
       }
     },
+    isLogged() {
+      return isLoggedIn(); // Poziv funkcije za proveru prijave iz session.js modula
+    },
     formatDate(date) {
       return format(new Date(date), 'dd.MM.yyyy');
     },
-    buyTickets() {
-      this.$router.push('/buy-tickets');
+    buyTickets(event) {
+      // Prosleđujemo odabrani događaj na stranicu za kupovinu karata preko Vue Router-a
+      this.$router.push({ name: 'BuyTickets', params: {id: event.idEvent } });
     },
     leaveComment(index) {
       const event = this.filteredEvents[index];
@@ -204,7 +199,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #ffffff;
+  background-color: #b8b7b7;
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

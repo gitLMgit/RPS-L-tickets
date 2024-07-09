@@ -1,13 +1,16 @@
 package com.example.demo.restControllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.ErrResponse;
 import com.example.demo.dtos.UserDTO;
 import com.example.demo.services.CategoryService;
 import com.example.demo.services.EventService;
@@ -67,10 +70,12 @@ public class PermitAllController {
 	
 	
 	@PostMapping("register")
-	public ResponseEntity<?> addCategory(UserDTO  dto){
+	public ResponseEntity<?> register(@RequestBody UserDTO  dto){
 		System.out.println(dto);
-		if (serviceUsr.existUsername(dto.getUsername()))
-			return ResponseEntity.ok(false);
+		if (serviceUsr.existUsername(dto.getUsername())) {
+			ErrResponse errorResponse = new ErrResponse(HttpStatus.BAD_REQUEST,"Username already exists");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
 		return ResponseEntity.ok(serviceUsr.register(dto));
 	}
 }

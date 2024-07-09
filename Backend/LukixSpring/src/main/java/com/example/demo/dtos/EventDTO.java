@@ -43,4 +43,9 @@ public class EventDTO {
 	public void setLocation(Integer location) {
 		this.location = location;
 	}
+	@Override
+	public String toString() {
+		return "EventDTO [description=" + description + ", date=" + date + ", title=" + title + ", category=" + category
+				+ ", location=" + location + "]";
+	}
 }

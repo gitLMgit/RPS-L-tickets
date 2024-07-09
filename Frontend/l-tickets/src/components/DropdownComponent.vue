@@ -1,12 +1,15 @@
 <template>
   <div class="dropdown">
     <button @click="toggleDropdown" class="dropdown-button">
-      {{ selectedCategory || 'Odaberite kategoriju' }}
+      {{ selectedCategory || 'Odaberite kategoriju..' }}
     </button>
     <div v-if="isOpen" class="dropdown-menu">
       <div v-for="category in categories" :key="category.idCategory" @click="selectCategory(category.category)">
         {{ category.category }}
       </div>
+      <div @click="selectCategory()">
+      Odaberite kategoriju..
+    </div>
     </div>
   </div>
 </template>
@@ -30,6 +33,12 @@ export default {
     toggleDropdown() {
       this.isOpen = !this.isOpen;
     },
+
+    allCats(){
+      this.selectCategory = '';
+      this.isOpen = false;
+      this.$emit('selectCategory', '');
+    },
     selectCategory(category) {
       this.selectedCategory = category;
       this.isOpen = false;
@@ -37,7 +46,7 @@ export default {
     },
     fetchCategories() {
       console.log("pribavljamo kat")
-      axios.get('/category/getAllCategories')
+      axios.get('/permitAll/getAllCategories')
         .then(response => {
           console.log(response.data)
           this.categories = response.data;
@@ -58,12 +67,18 @@ export default {
 }
 
 .dropdown-button {
+  width: 180px; 
+  height: 32px;
   background-color: #009688;
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  text-align: center;
+  line-height: normal; 
+  display: flex;
+  justify-content: center; 
 }
 
 .dropdown-menu {

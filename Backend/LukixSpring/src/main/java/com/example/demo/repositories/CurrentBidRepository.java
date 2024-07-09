@@ -15,4 +15,7 @@ public interface CurrentBidRepository extends JpaRepository<Currentbid, Integer>
 	
 	@Query("select c from Currentbid c where c.bid.idBid = :idB")
 	List<Currentbid> getCurrBids(@Param("idB")Integer bid);
+	
+	@Query("select c from Currentbid c where c.bid.ticket.event.idEvent = :idE")
+	Currentbid getCurrBidForEvent(@Param("idE")Integer bid);
 }

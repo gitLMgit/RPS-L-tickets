@@ -3,6 +3,7 @@ package com.example.demo.restControllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,13 +16,15 @@ public class UserController {
 	@Autowired
 	UserService service;
 	
-	@GetMapping("getUserTickets")
-	public ResponseEntity<?> getTicketsForUser(Integer idUser){
+	@GetMapping("getUserTickets/{idUser}")
+	public ResponseEntity<?> getTicketsForUser(@PathVariable Integer idUser){
+		System.out.println(idUser);
 		return ResponseEntity.ok(service.getUserTickets(idUser));
 	}
 	
-	@GetMapping("getUserBids")
-	public ResponseEntity<?> getUserBids(Integer idUser){
+	@GetMapping("getUserBids/{idUser}")
+	public ResponseEntity<?> getUserBids(@PathVariable Integer idUser){
+		System.out.println(idUser);
 		return ResponseEntity.ok(service.getUserBids(idUser));
 	}
 	

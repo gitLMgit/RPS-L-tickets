@@ -4,7 +4,7 @@
     <div class="event-details">
       <h2>{{ selectedEvent.title }}</h2>
       <p><strong>Datum:</strong> {{ selectedEvent.date }}</p>
-      <p><strong>Lokacija:</strong> {{ selectedEvent.location }}</p>
+      <p><strong>Lokacija:</strong> {{ selectedEvent.location.name }}</p>
       <p><strong>Trenutna cena licitacije:</strong> {{ currentBid }}</p>
       <input type="number" v-model="bidAmount" :min="currentBid" placeholder="Unesite vašu licitaciju">
       <button @click="placeBid">Licitiraj</button>
@@ -13,29 +13,69 @@
 </template>
 
 <script>
+import axios from '@/axios'; 
+import { format } from 'date-fns';
 export default {
-  name: 'BuyTicketsPage',
+  
+  name: 'BuyTickets',
   data() {
     return {
       selectedEvent: {
-        title: 'Partizan - Vojvodina',
-        date: '2024-07-10',
-        location: 'Beograd'
+        title: '',
+        date: '',
+        location: ''
       },
-      currentBid: 1000, // Initial bid amount
-      bidAmount: 1000
+      eventId: 0,
+      currentBid: 0, // Initial bid amount
+      bidAmount: 0
     };
   },
   methods: {
-    placeBid() {
-      if (this.bidAmount > this.currentBid) {
-        this.currentBid = this.bidAmount;
-        alert(`Uspešno ste licitirali sa iznosom ${this.bidAmount}`);
-      } else {
-        alert('Uneta vrednost mora biti veća od trenutne cene.');
-      }
-    }
+    async fetchEventDetails() {
+        console.log("u fetch data smo")
+        const userData = sessionStorage.getItem('userData');
+        const user = JSON.parse(userData);
+        console.log(user.token)
+        await axios.get(`/event/getEvent/${this.eventId}`,   {
+        headers: {
+    Authorization: `Bearer ${user.token}`
+  }}).then(response=> {
+    this.selectedEvent = response.data.event;
+    this.currentBid = response.data.currentBid
+    this.bidAmount = this.currentBid
+  }).catch (error => {
+    console.error('Failed to fetch event details:', error);
+  });
+    },
+    async placeBid() {
+      try {
+        const userData = sessionStorage.getItem('userData');
+        const user = JSON.parse(userData);
+        console.log(this.bidAmount)
+         const todayDate = format(new Date(), 'yyyy-MM-dd');
+      const response = await axios.post('/event/bidTicket', {
+          idUser: user.id,
+        idEvent: this.eventId,
+        bidPrice: this.bidAmount,
+        bidDateTime:  todayDate
+      });
+      if (response.data)
+        console.log('Uspesno poslato:', response.data);
+      else 
+        console.log("Neuspesno.")
+      // Obrada odgovora ako je potrebno
+    } catch (error) {
+        console.error('Greska pri slanju licitacije:', error);
+    // Obrada greške
   }
+    }
+  },
+  created(){
+      console.log("stigli smo u create")
+      this.eventId = this.$route.params.id;
+    // Učitavanje detalja događaja na osnovu eventId
+      this.fetchEventDetails();
+    },
 };
 </script>
 

@@ -14,7 +14,22 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 			+ "  where bid.buyer.user_idUser = :idU")
 	List<Ticket> getUserTickets(@Param("idU")Integer id);
 	
-	@Query("select t from Ticket t group by t.event.idEvent")
+	@Query("select t from Ticket t order by t.event.idEvent")
 	List<Ticket> getTicketStat();
+	
+	@Query("select t from Ticket t where t.event.idEvent = :id")
+	List<Ticket> findByEvent(@Param("id")Integer idE);
+	
+	@Query("select t.startPrice from Ticket t where t.event.idEvent = :id")
+	double getStartPrice(@Param("id")Integer idE);
+	
+	@Query("select count(t) from Ticket t where t.event.idEvent = :id")
+	int getNumtickets(@Param("id")Integer idE);
+	
+	@Query("select sum(t.startPrice) from Ticket t where t.event.idEvent = :id")
+	double getRevenur(@Param("id")Integer idE);
+	
+	@Query("select t from Ticket t where t.event.idEvent = :id")
+	List<Ticket> existTickets(@Param("id")Integer idE);
 	
 }

@@ -6,85 +6,98 @@
           LukStix
           <div class="subtitle">Sajt za rezervacije</div>
         </div>
-        <div class="search-bar">
+        <div class="search-bar" v-if="isUser()" >
           <input type="text" v-model="searchQuery" placeholder="Pretražite događaje">
           <i class="fa fa-search"></i>
         </div>
         <div class="controls-container">
           <ButtonComponent 
-            v-if="!isLoggedIn" 
+            v-if="!isLogged()" 
             @open-register-modal="openRegisterModal" 
             @open-login-modal="openLoginModal" 
           />
-          <DropdownComponent @selectCategory="selectCategory"/>
-          <button v-if="isLoggedIn" @click="logout" class="logout-button">Odjavi se</button>
-          <router-link v-if="isLoggedIn" to="/my-account" class="my-account-button">Moj nalog</router-link>
+          <DropdownComponent v-if="isUser()"  @selectCategory="selectCategory"/>
+          <router-link v-if="isLogged() && isUser()" to="/my-account" class="my-account-button">Moj nalog</router-link>
+          <router-link v-if="isLogged() && !isUser()" to="/statistics" class="my-account-button">Statistika</router-link>
+          <router-link v-if="isLogged() && !isUser()" to="/admin-page" class="my-account-button">Dodavanje</router-link>
+          <button v-if="isLogged()" @click="logoutU" class="logout-button">Odjavi se</button>
         </div>
       </div>
     </header>
     <router-view :selected-category="selectedCategory" :search-query="searchQuery"></router-view>
-    <footer>
-      <h1>Dobrodošli na naš sajt za rezervacije!</h1>
+    <footer class="footer">
+      <h2>Dobrodošli na naš sajt za rezervacije!</h2>
     </footer>
 
-    <!-- Modal za registraciju -->
     <div class="modal" v-if="showRegisterModal">
-      <div class="modal-content">
-        <h2>Registracija</h2>
-        <form @submit.prevent="register">
-          <div>
-            <label for="ime">Ime:</label>
-            <input type="text" id="ime" v-model="form.ime" required>
-          </div>
-          <div>
-            <label for="prezime">Prezime:</label>
-            <input type="text" id="prezime" v-model="form.prezime" required>
-          </div>
-          <div>
-            <label for="pol">Pol:</label>
-            <select id="pol" v-model="form.pol" required>
-              <option value="M">Muški</option>
-              <option value="Ž">Ženski</option>
-            </select>
-          </div>
-          <div>
-            <label for="korisnicko-ime">Korisničko ime:</label>
-            <input type="text" id="korisnicko-ime" v-model="form.korisnickoIme" required>
-          </div>
-          <div>
-            <label for="lozinka">Lozinka:</label>
-            <input type="password" id="lozinka" v-model="form.lozinka" required>
-          </div>
-          <button type="submit">Registruj se</button>
-        </form>
-        <button class="close-modal" @click="closeRegisterModal">Zatvori</button>
+  <div class="modal-content">
+    <h2>Registracija</h2>
+    <form @submit.prevent="register">
+      <div v-if="registerError" class="error-message">{{ registerError }}</div>
+      <div>
+        <label for="name">Ime:</label>
+        <input type="text" id="name" v-model="form.name" required>
       </div>
-    </div>
-
-    <!-- Modal za logovanje -->
-    <div class="modal" v-if="showLoginModal">
-      <div class="modal-content">
-        <h2>Logovanje</h2>
-        <form @submit.prevent="login">
-          <div>
-            <label for="korisnicko-ime-login">Korisničko ime:</label>
-            <input type="text" id="korisnicko-ime-login" v-model="loginForm.korisnickoIme" required>
-          </div>
-          <div>
-            <label for="lozinka-login">Lozinka:</label>
-            <input type="password" id="lozinka-login" v-model="loginForm.lozinka" required>
-          </div>
-          <button type="submit">Uloguj se</button>
-        </form>
-        <button class="close-modal" @click="closeLoginModal">Zatvori</button>
+      <div>
+        <label for="surname">Prezime:</label>
+        <input type="text" id="surname" v-model="form.surname" required>
       </div>
-    </div>
+      <div>
+        <label for="age">Godine:</label>
+        <input type="number" id="age" v-model="form.age" required>
+      </div>
+      <div>
+        <label for="status">Status  :</label>
+        <input type="text" id="status" v-model="form.status" required>
+      </div>
+      <div>
+        <label for="gender">Pol:</label>
+        <select id="gender" v-model="form.gender" required>
+          <option value="M">Muški</option>
+          <option value="Ž">Ženski</option>
+        </select>
+      </div>
+      <div>
+        <label for="username">Korisničko ime:</label>
+        <input type="text" id="username" v-model="form.username" required>
+      </div>
+      <div>
+        <label for="password">Lozinka:</label>
+        <input type="password" id="password" v-model="form.password" required>
+      </div>
+      <button type="submit">Registruj se</button>
+    </form>
+    <button class="close-modal" @click="closeRegisterModal">Zatvori</button>
   </div>
+</div>
+
+
+    <div class="modal" v-if="showLoginModal">
+  <div class="modal-content">
+    <h2>Logovanje</h2>
+    <form @submit.prevent="login">
+      <div v-if="loginError" class="error-message">{{ loginError }}</div>
+      <div>
+        <label for="korisnicko-ime-login">Korisničko ime:</label>
+        <input type="text" id="korisnicko-ime-login" v-model="loginForm.email" required>
+      </div>
+      <div>
+        <label for="lozinka-login">Lozinka:</label>
+        <input type="password" id="lozinka-login" v-model="loginForm.password" required>
+      </div>
+      <button type="submit">Uloguj se</button>
+    </form>
+    <button class="close-modal" @click="closeLoginModal">Zatvori</button>
+  </div>
+</div>
+</div>
 </template>
 
 <script>
 import ButtonComponent from './components/ButtonComponent.vue';
 import DropdownComponent from './components/DropdownComponent.vue';
+import axios from '@/axios'; 
+import { isLoggedIn, logout, isUserLoged } from './session.js';
 
 export default {
   name: 'App',
@@ -98,19 +111,23 @@ export default {
       showRegisterModal: false,
       showLoginModal: false,
       form: {
-        ime: '',
-        prezime: '',
-        pol: 'M',
-        korisnickoIme: '',
-        lozinka: ''
+        name: '',
+        surname: '',
+        age: 0,
+        status: '',
+        gender: '',
+        username: '',
+        password: '',
       },
       loginForm: {
-        korisnickoIme: '',
-        lozinka: ''
+        email: '',
+        password: ''
       },
       isLoggedIn: false,
       searchQuery: '',
-      selectedCategory: ''
+      selectedCategory: '',
+      loginError: '',
+      registerError: ''
     };
   },
   methods: {
@@ -122,11 +139,19 @@ export default {
       event.rating = 0;
       event.comment = '';
     },
+    isLogged() {
+      return isLoggedIn(); // Poziv funkcije za proveru prijave iz session.js modula
+    },
     goToMyAccount() {
       console.log('Navigacija ka MyAccount');
       this.$router.push('/my-account');
       //window.location.href = '/my-account'
     },
+
+    isUser() {
+      console.log(isUserLoged())
+      return !isUserLoged()
+    }, 
 
     openRegisterModal() {
       this.showRegisterModal = true;
@@ -135,19 +160,47 @@ export default {
       this.showRegisterModal = false;
     },
     register() {
-      // Implementacija logike za registrovanje korisnika
-      console.log('Podaci za registraciju:', this.form);
-      // Resetovanje forme i zatvaranje modala nakon registracije
-      this.form = {
-        ime: '',
-        prezime: '',
-        pol: 'M',
-        korisnickoIme: '',
-        lozinka: ''
-      };
-      this.closeRegisterModal();
-      this.$router.push('/')
-    },
+  // Kreiranje objekta sa podacima za slanje
+  const userData = {
+    name: this.form.name,
+    surname: this.form.surname,
+    age: this.form.age,
+    status: this.form.status,
+    gender: this.form.gender,
+    username: this.form.username,
+    password: this.form.password
+  };
+
+  // Slanje podataka na backend
+  axios.post('/permitAll/register', JSON.stringify(userData), {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(response => {
+    console.log('Server response:', response.data);
+    alert("Uspešno ste se registrovali! sada se možete ulogovati.")
+    // Resetovanje forme i zatvaranje modala nakon registracije
+    this.form = {
+      name: '',
+      surname: '',
+      age: 0,
+      status: '',
+      gender: '',
+      username: '',
+      password: ''
+    };
+    this.closeRegisterModal();
+    alert('Uspešno ste se registrovali!');
+    this.$router.go('/');
+  }).catch(error => {
+    if (error.response && error.response.status === 400) {
+      this.registerError = 'Korisnik sa unetim korisničkim imenom već postoji.';
+    } else {
+      console.error('Error submitting form:', error);
+      this.registerError = 'Došlo je do greške prilikom registracije. Molimo pokušajte ponovo.';
+    }
+  });
+},
     openLoginModal() {
       this.showLoginModal = true;
     },
@@ -155,29 +208,46 @@ export default {
       this.showLoginModal = false;
     },
     login() {
-      // Implementacija logike za logovanje korisnika
-      console.log('Podaci za logovanje:', this.loginForm);
+  // Implementacija logike za logovanje korisnika
+  console.log('Podaci za logovanje:', this.loginForm);
+  axios.post('/rest/auth/login', JSON.stringify(this.loginForm), {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(response => {
+    console.log('Server response:', response.data);
+    sessionStorage.setItem('userData', JSON.stringify(response.data));
+    this.closeLoginModal();
+    console.log(response.data.admin)
+    if (response.data.admin == false)
+      this.$router.go(0);
+    else
+      this.$router.push('/statistics')
+  }).catch(error => {
+    if (error.response && error.response.status === 400) {
+      console.error('Bad request:', error.response.data);
+      // Postavljanje poruke o grešci
+      this.loginError = 'Pogrešno korisničko ime ili lozinka. Molimo pokušajte ponovo.';
+    } else {
+      console.error('Error submitting form:', error);
+      // Handle other errors
+      this.loginError = 'Došlo je do greške prilikom logovanja. Molimo pokušajte ponovo.';
+    }
+
+  });
       // Resetovanje forme i zatvaranje modala nakon logovanja
       this.loginForm = {
-        korisnickoIme: '',
-        lozinka: ''
+        email: '',
+        password: ''
       };
-      this.closeLoginModal();
-      this.isLoggedIn = true;
-      // Postavljanje statusa ulogovanosti za sve događaje (simulacija ulogovanosti)
-      this.events.forEach(event => {
-        event.loggedIn = true;
-      });
-      this.$router.push('/')
+      
     },
-    logout() {
-      // Implementacija logike za odjavu korisnika
-      this.isLoggedIn = false;
-      // Resetovanje statusa ulogovanosti za sve događaje (simulacija odjave)
-      this.events.forEach(event => {
-        event.loggedIn = false;
-      });
-      this.$router.push('/')
+    logoutU() {
+      logout()
+      axios.post('/rest/auth/logout')
+      sessionStorage.removeItem('userData');
+      console.log("u log out smo")
+      window.location.href='/'
     },
     buyTickets() {
       this.$router.push('/buy-tickets');
@@ -474,5 +544,24 @@ header {
   transform: translateY(-50%);
   color: #555;
 }
+
+.error-message {
+  color: #e53935; /* Crvena boja za poruku o grešci */
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 8%;
+  background-color: #0b2503; 
+  color: white; 
+  text-align: center;
+  padding: 5px; 
+}
+
 
 </style>

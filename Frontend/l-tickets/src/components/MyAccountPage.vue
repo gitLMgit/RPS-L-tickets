@@ -9,11 +9,9 @@
         class="ticket-card" 
         :class="{ 'active-auction': ticket.isAuctionActive }"
       >
-        <h2>{{ ticket.eventName }}</h2>
-        <p>ID: {{ ticket.id }}</p>
-        <p>Datum: {{ ticket.date }}</p>
-        <p>Sedište: {{ ticket.seat }}</p>
-        <p>Cena: {{ ticket.price }} RSD</p>
+        <h2>{{ ticket.event.title }}</h2>
+        <p>Datum: {{ ticket.purchaseDate }}</p>
+        <p>Cena: {{ ticket.startPrice }} RSD</p>
         <div v-if="ticket.isAuctionActive" class="cancel-auction" @click="cancelAuction(ticket.id)">
           X
         </div>
@@ -28,66 +26,68 @@
             <label for="comment">Komentar:</label>
             <textarea v-model="ticket.comment"></textarea>
           </div>
-          <button @click="submitFeedback(ticket.id)">Pošalji ocenu i komentar</button>
+          <button @click="submitFeedback(ticket)">Pošalji ocenu i komentar</button>
         </div>
       </div>
     </div>
   </div>
 </template>
 
+
 <script>
+
+import axios from '@/axios';
+
 export default {
-  name: 'MyAccountPage',
   data() {
     return {
-      tickets: [
-        {
-          id: '12345',
-          eventName: 'Koncert 1',
-          date: '2024-08-01',
-          seat: 'A1',
-          price: '5000',
-          isAuctionActive: false,
-          rating: null,
-          comment: ''
-        },
-        {
-          id: '67890',
-          eventName: 'Predstava 2',
-          date: '2024-09-15',
-          seat: 'B2',
-          price: '3000',
-          isAuctionActive: false,
-          rating: null,
-          comment: ''
-        },
-        {
-          id: '1234567',
-          eventName: 'Koncert 3',
-          date: '2024-08-02',
-          seat: 'C2',
-          price: '5000',
-          isAuctionActive: true,
-          rating: null,
-          comment: ''
-        },
-      ]
+      tickets: []
     };
   },
   methods: {
+    async fetchUserTickets() {
+      const user = JSON.parse(sessionStorage.getItem('userData'));
+      const idUser = user.id;
+
+      try {
+        console.log('Usao sam')
+        const response = await axios.get(`/user/getUserTickets/${idUser}`);
+        console.log('Tu smo!')
+        this.tickets = response.data;
+        console.log('User tickets:', this.tickets);
+      } catch (error) {
+        console.error('Failed to fetch user tickets:', error);
+      }
+    },
     cancelAuction(ticketId) {
       this.tickets = this.tickets.filter(ticket => ticket.id !== ticketId);
       console.log(`Licitacija za kartu ${ticketId} je otkazana i karta je obrisana.`);
     },
-    submitFeedback(ticketId) {
-      const ticket = this.tickets.find(ticket => ticket.id === ticketId);
-      if (ticket) {
-        console.log(`Ocena za događaj ${ticket.eventName}: ${ticket.rating}`);
-        console.log(`Komentar za događaj ${ticket.eventName}: ${ticket.comment}`);
-        // Ovdje možete implementirati logiku za slanje ocene i komentara na server
-        alert(`Ocena i komentar za događaj ${ticket.eventName} su poslati.`);
-      }
-    }
+    submitFeedback(ticket) {
+      const user = JSON.parse(sessionStorage.getItem('userData'));
+      const UserId = user.id;
+      console.log(ticket)
+  //const ticket = this.tickets.find(ticket => ticket.id === ticketId);
+    const rateEvent = {
+      idUser: UserId, 
+      idEvent: ticket.event.idEvent, 
+      rate: ticket.rating,
+      comment: ticket.comment
+    };
+
+    axios.post('/event/rateEvent', rateEvent)
+      .then(response => {
+        console.log('Ocena i komentar su uspešno poslati.', response.data);
+        alert(`Ocena i komentar za događaj ${ticket.event.idEvent} su poslati.`);
+      })
+      .catch(error => {
+        console.error('Greška prilikom slanja ocene i komentara:', error);
+        alert('Došlo je do greške prilikom slanja ocene i komentara.');
+      });
+  }
+},
+  created() {
+    this.fetchUserTickets();
   }
 };
 </script>

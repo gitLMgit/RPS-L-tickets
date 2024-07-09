@@ -54,7 +54,7 @@ public class LoginController {
             if (email.contains("admin"))
             	loginRes.setAdmin(true);
             else loginRes.setAdmin(false);
-            System.out.println(loginRes.getAdmin());
+            //System.out.println(loginRes.getAdmin());
 
             return ResponseEntity.ok(loginRes);
 
