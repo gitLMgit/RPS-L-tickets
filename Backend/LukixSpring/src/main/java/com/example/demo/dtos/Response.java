@@ -1,15 +1,15 @@
 package com.example.demo.dtos;
 
 public class Response {
-	String email;
+	Integer id;
 	String token;
 	Boolean admin;
 	
-	public String getEmail() {
-		return email;
+	public Integer getId() {
+		return id;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	public String getToken() {
 		return token;
@@ -25,7 +25,7 @@ public class Response {
 	}
 	@Override
 	public String toString() {
-		return "Response [email=" + email + ", token=" + token + ", admin= "+admin+"]";
+		return "Response [id=" + id + ", token=" + token + ", admin= "+admin+"]";
 	}
 	
 	

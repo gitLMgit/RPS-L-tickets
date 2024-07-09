@@ -1,6 +1,7 @@
 package com.example.demo.restControllers;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,7 @@ import com.example.demo.dtos.ErrResponse;
 import com.example.demo.dtos.LoginReq;
 import com.example.demo.dtos.Response;
 import com.example.demo.security.JwtUtil;
+import com.example.demo.services.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import model.User;
@@ -27,6 +29,9 @@ public class LoginController {
 
     private final AuthenticationManager authenticationManager;
     private JwtUtil jwtUtil;
+    
+    @Autowired
+    UserService userService;
     
     public LoginController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
@@ -41,11 +46,10 @@ public class LoginController {
             Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
             String email = authentication.getName();
-            User user = new User();
-            user.setUsername(email);
+            User user = userService.findByUsername(email);
             String token = jwtUtil.createToken(user);
             Response loginRes = new Response();
-            loginRes.setEmail(email);
+            loginRes.setId(user.getIdUser());
             loginRes.setToken(token);
             if (email.contains("admin"))
             	loginRes.setAdmin(true);

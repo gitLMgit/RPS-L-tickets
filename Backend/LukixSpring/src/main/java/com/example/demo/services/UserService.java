@@ -36,6 +36,10 @@ public class UserService {
 	@Autowired
 	CurrentBidRepository curBR;
 	
+	public User findByUsername(String email) {
+		return ur.findByUsername(email);
+	}
+	
 	public boolean register(UserDTO user) {
 		User newUser = new User();
 		newUser.setGender(user.getGender());
