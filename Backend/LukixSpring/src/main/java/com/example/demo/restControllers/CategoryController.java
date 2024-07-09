@@ -17,18 +17,11 @@ public class CategoryController {
 	@Autowired
 	CategoryService service;
 	
-	@GetMapping("getAllCategories")
-	public ResponseEntity<?> getAll(){
-		return ResponseEntity.ok(service.getCategories());
-	}
 	
 	@PostMapping("addCategory")
 	public ResponseEntity<?> addCategory(@RequestParam("catName")String  catName){
 		return ResponseEntity.ok(service.addCategory(catName));
 	}
 	
-	@GetMapping("existCategory")
-	public ResponseEntity<?> findCategory(@RequestParam("catName")String name){
-		return ResponseEntity.ok(service.existCat(name));
-	}
+
 }

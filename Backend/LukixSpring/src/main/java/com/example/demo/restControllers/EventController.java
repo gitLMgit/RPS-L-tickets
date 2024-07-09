@@ -20,25 +20,6 @@ public class EventController {
 	@Autowired
 	EventService service;
 	
-	@GetMapping("getAllEvent")
-	public ResponseEntity<?> getAll(){
-		return ResponseEntity.ok(service.getAllEvent());
-	}
-	
-	@GetMapping("getEventByCat")
-	public ResponseEntity<?> getEventByCat(@RequestParam("idC")Integer idCat){
-		if (service.getEventByCat(idCat).size() == 0)
-			return ResponseEntity.ok(false);
-		return ResponseEntity.ok(service.getEventByCat(idCat));
-	}
-	
-	@GetMapping("getEventByNameOrLocation")
-	public ResponseEntity<?> getEventByNameOrLocation(@RequestParam("inputString")String input){
-		if (service.getEventByNameOrLocation(input).size() == 0)
-			return ResponseEntity.ok(false);
-		return ResponseEntity.ok(service.getEventByNameOrLocation(input));
-	}
-	
 	@PostMapping("bidTicket")
 	public ResponseEntity<?> bidTicket(Integer idUser, Integer idTicket, Float bidPrice,  
 			@DateTimeFormat(pattern="yyyy-MM-dd") Date bidDateTime) {
